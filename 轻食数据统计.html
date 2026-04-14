@@ -892,27 +892,6 @@
             showToast('汇总表已导出');
         }
         
-        // 窗口控制
-        function minimizeWindow() {
-            showToast('浏览器版不支持最小化');
-        }
-        
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        }
-        
-        function closeWindow() {
-            if (confirm('确定要关闭吗？')) {
-                window.close();
-                // 如果无法关闭，显示提示
-                showToast('请手动关闭浏览器标签页');
-            }
-        }
-        
         // Toast提示
         function showToast(msg) {
             const toast = document.getElementById('toast');
