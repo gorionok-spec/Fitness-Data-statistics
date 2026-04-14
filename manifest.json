@@ -1,0 +1,16 @@
+{
+  "name": "轻食数据统计",
+  "short_name": "轻食统计",
+  "description": "轻食数据统计小助手",
+  "start_url": "/轻食数据统计.html",
+  "display": "standalone",
+  "background_color": "#FFF8EB",
+  "theme_color": "#FFA05A",
+  "icons": [
+    {
+      "src": "icon_settings.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
