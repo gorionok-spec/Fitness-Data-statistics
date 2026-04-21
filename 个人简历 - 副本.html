@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历</title>
+    <style>
+        :root {
+            --dark: #0a0a10;
+            --darker: #050508;
+            --accent: #64ffda;
+            --accent-light: #85fff3;
+            --text: #e6e6e6;
+            --text-secondary: #8892b0;
+            --border: #232333;
+            --card-bg: #11111a;
+            --timeline-line: #232333;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: var(--darker);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .sidebar-top {
+            text-align: center;
+        }
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-bottom: 1.2rem;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.15);
+        }
+        .sidebar-bottom {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .title {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav {
+            margin-top: 2rem;
+            position: relative;
+        }
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            padding-top: 4px;
+        }
+        .nav-indicator {
+            position: absolute;
+            left: 0;
+            width: 3px;
+            height: 38px;
+            background-color: var(--accent);
+            border-radius: 2px;
+            transition: transform 0.3s ease, top 0.3s ease;
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .nav-link {
+            display: block;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .nav-link:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            color: var(--accent);
+        }
+        .nav-link.active {
+            background-color: rgba(100, 255, 218, 0.15);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .sidebar-bottom {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4rem 27rem;
+        }
+        .section {
+            margin-bottom: 5rem;
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        #home {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--dark);
+        }
+        .home-title {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        .home-title span {
+            color: var(--accent);
+        }
+        .home-desc {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem 1.5rem;
+            padding: 1.5rem;
+            background: rgba(100, 255, 218, 0.03);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            max-width: 700px;
+        }
+        .profile-item {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        .profile-label {
+            color: var(--accent);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .profile-value {
+            color: var(--text);
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0;
+        }
+        .tag {
+            padding: 0.5rem 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-light);
+        }
+        .timeline {
+            border-left: 2px solid var(--timeline-line);
+            padding-left: 1.5rem;
+            margin-left: 0.5rem;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: var(--accent);
+        }
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .timeline-school, .timeline-company {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .timeline-degree, .timeline-position {
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .timeline-desc {
+            color: var(--text);
+            font-size: 0.98rem;
+            line-height: 1.7;
+            text-indent: 2em;
+        }
+        .timeline-desc ul {
+            margin-top: 0.5rem;
+            padding-left: 1.2rem;
+        }
+        .timeline-desc li {
+            margin-bottom: 0.3rem;
+        }
+        /* 非首页section字体放大两号 */
+        #education .timeline-item,
+        #experience .timeline-item,
+        #fulltime .timeline-item {
+            padding-bottom: 2.5rem;
+        }
+        #education .timeline-date,
+        #experience .timeline-date,
+        #fulltime .timeline-date,
+        #about .timeline-date {
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+        }
+        #education .timeline-school,
+        #experience .timeline-company,
+        #fulltime .timeline-company {
+            font-size: 1.4rem;
+            margin-bottom: 0.4rem;
+        }
+        #education .timeline-degree,
+        #experience .timeline-position,
+        #fulltime .timeline-position {
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+        #education .timeline-desc,
+        #experience .timeline-desc,
+        #fulltime .timeline-desc {
+            font-size: 1.1rem;
+            line-height: 1.85;
+        }
+        #education .timeline-desc ul,
+        #experience .timeline-desc ul,
+        #fulltime .timeline-desc ul {
+            padding-left: 1.5rem;
+        }
+        #education .timeline-desc li,
+        #experience .timeline-desc li,
+        #fulltime .timeline-desc li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        #about .timeline-desc {
+            font-size: 1.1rem;
+            line-height: 1.9;
+        }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.8rem;
+        }
+        .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.8rem;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(100, 255, 218, 0.1);
+        }
+        .project-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+        .project-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        .skills-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .skill-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        .skill-group:last-child {
+            border-bottom: none;
+        }
+        .skill-title {
+            min-width: 140px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            padding-top: 0.2rem;
+        }
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .skill-item {
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.15), rgba(100, 255, 218, 0.05));
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 20px;
+            font-size: 1.05rem;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+        .skill-item:hover {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .download-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--accent);
+            color: var(--dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(100, 255, 218, 0.3);
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(100, 255, 218, 0.4);
+        }
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main {
+                margin-left: 220px;
+                padding: 2rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1.5rem 1rem;
+            }
+            .sidebar-top {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .avatar {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 0.5rem;
+            }
+            .name {
+                font-size: 1.3rem;
+            }
+            .title {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+            .nav {
+                margin-top: 0.5rem;
+                width: 100%;
+            }
+            .nav-list {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.3rem;
+                padding-bottom: 0;
+            }
+            .nav-indicator {
+                display: none;
+            }
+            .nav-link {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+                border-left: none;
+                border-bottom: none;
+                background: rgba(100, 255, 218, 0.1);
+                border-radius: 20px;
+            }
+            .nav-link.active {
+                background: var(--accent);
+                color: var(--dark);
+            }
+            .sidebar-bottom {
+                margin-top: 1rem;
+                font-size: 0.75rem;
+            }
+            .main {
+                margin-left: 0;
+                padding: 1.5rem 1rem;
+            }
+            .home-title {
+                font-size: 1.8rem;
+                text-align: center;
+            }
+            .home-desc {
+                font-size: 1rem;
+            }
+            .profile-info {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+                padding: 1rem;
+            }
+            .profile-item {
+                font-size: 0.9rem;
+            }
+            .tags {
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            .tag {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .skill-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .skill-title {
+                min-width: auto;
+                font-size: 1rem;
+            }
+            .skill-list {
+                gap: 0.5rem;
+            }
+            .skill-item {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .timeline {
+                padding-left: 1rem;
+            }
+            .timeline-item::before {
+                left: -19px;
+                width: 10px;
+                height: 10px;
+            }
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+            .timeline-date {
+                font-size: 0.9rem;
+            }
+            .timeline-school, .timeline-company {
+                font-size: 1.1rem;
+            }
+            .timeline-degree, .timeline-position {
+                font-size: 1rem;
+            }
+            .timeline-desc {
+                font-size: 0.95rem;
+            }
+            .timeline-desc ul {
+                padding-left: 1rem;
+            }
+            #education .timeline-date,
+            #experience .timeline-date,
+            #fulltime .timeline-date,
+            #about .timeline-date,
+            #education .timeline-school,
+            #experience .timeline-company,
+            #fulltime .timeline-company {
+                font-size: 1.05rem;
+            }
+            #education .timeline-degree,
+            #experience .timeline-position,
+            #fulltime .timeline-position,
+            #education .timeline-desc,
+            #experience .timeline-desc,
+            #fulltime .timeline-desc,
+            #about .timeline-desc {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media print {
+            .sidebar, .download-btn {
+                display: none;
+            }
+            .main {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .section-title, .home-title {
+                color: black;
+            }
+            .timeline-item::before {
+                background: black;
+            }
+            :root {
+                --accent: black;
+                --text-secondary: #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <img src="./photo.jpg" alt="头像" class="avatar">
+                <h1 class="name">郭达</h1>
+
+                <nav class="nav">
+                    <div class="nav-indicator"></div>
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link active">首页</a></li>
+                        <li><a href="#education" class="nav-link">教育经历</a></li>
+                        <li><a href="#experience" class="nav-link">实习经历</a></li>
+                        <li><a href="#fulltime" class="nav-link">全职经历</a></li>
+                        <li><a href="#skills" class="nav-link">技能特长</a></li>
+                        <li><a href="#about" class="nav-link">自我评价</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-bottom">
+                <p>© 2026-郭达个人简历</p>
+            </div>
+        </aside>
+        <main class="main">
+            <section id="home" class="section">
+                <h1 class="home-title">你好，我是 <span>郭达</span></h1>
+                <p class="home-desc">2026 届软件工程本科，具备工业机器人技术 + 计算机开发复合背景，熟练掌握工程绘图、编程与设计剪辑工具。拥有大型政企人才活动、校企项目统筹、国际会议执行、培训体系搭建等实战经验，擅长跨团队协同、大型项目落地、资源整合与现场高抗压运营，执行力强、责任心重，可快速胜任项目管理、活动运营、校企合作、技术支持等岗位，以高效交付与结果导向创造价值。</p>
+
+                <div class="profile-info">
+                    <div class="profile-item">
+                        <span class="profile-label">年龄：</span>
+                        <span class="profile-value">26</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">籍贯：</span>
+                        <span class="profile-value">广东梅州</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">电话：</span>
+                        <span class="profile-value">14754920036</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">学历：</span>
+                        <span class="profile-value">本科</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">微信：</span>
+                        <span class="profile-value">Gorion_</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">邮箱：</span>
+                        <span class="profile-value">553029176@qq.com</span>
+                    </div>
+                </div>
+
+                <div class="tags">
+                    <span class="tag">ISFJ</span>
+                    <span class="tag">项目统筹</span>
+                    <span class="tag">团队协调</span>
+                    <span class="tag">活动策划</span>
+                    <span class="tag">品牌运营</span>
+                    <span class="tag">PRINCE2</span>
+                </div>
+            </section>
+
+            <section id="education" class="section">
+                <h2 class="section-title">教育经历</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2024.09 — 至今（2026年6月毕业）</div>
+                            <div class="timeline-school">广州商学院</div>
+                        </div>
+                        <div class="timeline-degree">软件工程 | 本科</div>
+                        <div class="timeline-desc">
+                            主修计算机专业核心课程，系统掌握数据处理、软件开发与程序设计的基础理论与实践方法，完成多项综合实验训练。学习了大数据应用相关知识，具备扎实的数据处理逻辑与编程实践基础，熟悉主流操作系统应用规范，形成了严谨的工程思维与实操能力。
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2019.09 — 2022.06</div>
+                            <div class="timeline-school">深圳信息职业技术学院</div>
+                        </div>
+                        <div class="timeline-degree">工业机器人技术 | 专科</div>
+                        <div class="timeline-desc">
+                            主修工业机器人、机电一体化、单片机及专业控制器操作等核心课程，夯实专业理论与实践基础。在校期间担任学院学生会组织部部长，负责团员管理与活动策划组织；同时任校深圳信息广播电视台副秘书长，统筹部门协作与社团对接工作。
+                            <br><br>
+                            <strong>荣誉奖项与证书：</strong>
+                            <ul>
+                                <li>2020年 校内数学建模竞赛一等奖</li>
+                                <li>2020年 全国数学建模竞赛优胜奖</li>
+                                <li>2021年 校级优秀学生干部</li>
+                                <li>工业机器人操作与运维高级职业技能等级证书</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="section">
+                <h2 class="section-title">实习经历</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2026.03 — 至今</div>
+                            <div class="timeline-company">北京网聘信息技术有限公司（智联招聘）</div>
+                        </div>
+                        <div class="timeline-position">执行顾问（实习）· 港澳台合资</div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li><strong>项目统筹与交付能力：</strong>独立统筹宣讲会、笔试面试、企业 OpenDay、路演等线下项目，成功完成覆盖30+高校的项目执行落地，精准把控时间节点与现场流程，交付满意度高达95%。</li>
+                                <li><strong>跨团队协调执行能力：</strong>负责全流程线下项目管理与线上项目交付，高效协调技术、内容等多团队资源，保障了空中宣讲会等线上项目的顺利实施与交付。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2025.12 — 2026.02</div>
+                            <div class="timeline-company">深圳千里马国际招聘有限公司（国企）</div>
+                        </div>
+                        <div class="timeline-position">项目实习生 · 国企</div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li><strong>校企资源整合与大型活动统筹能力：</strong>负责新业务拓展与跨部门项目落地，主导院校资源深度对接。在龙华区人力资源服务产业园项目中，协调 100 所高校与 500 + 家企业资源，统筹参会接待、展位布置及参访安排全流程，并主导政策宣讲与签约仪式的现场引导，最终完成数据统计与活动总结，有效促进校企合作转化。</li>
+                                <li><strong>大型现场运营与服务交付能力：</strong>在广东省人社厅主办的省级重点人才招聘活动中，负责福田会展中心现场专区运营。面对 1300 + 家企业、6.5 万 + 岗位及 12 万 + 求职者的超大规模场景，高效协调企业与求职者沟通，精准处理展位排布等现场事务，保障了活动的有序流转与高质量服务交付。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2025.08 — 2025.11</div>
+                            <div class="timeline-company">北京网聘信息技术有限公司（智联招聘）</div>
+                        </div>
+                        <div class="timeline-position">执行顾问（实习）· 港澳台合资</div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li><strong>项目统筹与交付能力：</strong>独立统筹宣讲会、笔试面试、企业 OpenDay、路演等线下项目，成功完成覆盖30+高校的项目执行落地，精准把控时间节点与现场流程，交付满意度高达95%。</li>
+                                <li><strong>跨团队协调执行能力：</strong>负责全流程线下项目管理与线上项目交付，高效协调技术、内容等多团队资源，保障空中宣讲会等线上项目的顺利实施与交付。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fulltime" class="section">
+                <h2 class="section-title">全职经历</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div class="timeline-date">2022.02 — 2023.05</div>
+                            <div class="timeline-company">深圳领航智图信息技术有限公司</div>
+                        </div>
+                        <div class="timeline-position">总经理助理、培训专员 · 民营企业</div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li><strong>国际活动统筹与商务拓展能力：</strong>主导 PRINCE2 项目管理培训、中德圆桌会议等高端活动全流程策划与落地，联动国内及德国共 10 + 优质机构参与，吸引 200 + 专业人士到场，成功促成 3 项中德企业初步合作意向；2022 年 9 月统筹接待诺贝尔化学奖得主迈克尔·莱维特教授，完成深圳宝安区中德（欧）产业示范园主题座谈会的流程设计、嘉宾对接与现场执行，保障高端活动零失误落地。</li>
+                                <li><strong>培训体系搭建与运营管理能力：</strong>独立负责培训课程体系搭建，完成课程大纲编排、培训资料梳理，统筹 20 + 场培训活动有序开展，覆盖公司全员及合作企业员工；协助推进公司培训业务全流程，参与课程大纲编排与活动组织，保障培训项目高效落地。</li>
+                                <li><strong>品牌宣传与新媒体运营能力：</strong>负责公司培训业务与新闻媒体相关事务，承担公众号、官网的新闻编辑、文章排版与发布工作，维护公司各类账号日常运营，保障品牌内容专业输出，助力公司品牌形象建设。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <section id="skills" class="section">
+                <h2 class="section-title">技能特长</h2>
+                <div class="skills-grid">
+                    <div class="skill-group">
+                        <h3 class="skill-title">编程开发 · AI辅助</h3>
+                        <div class="skill-list">
+                            <span class="skill-item">Python</span>
+                            <span class="skill-item">C语言</span>
+                            <span class="skill-item">Java</span>
+                            <span class="skill-item">Spring Boot</span>
+                            <span class="skill-item">Vue.js</span>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <h3 class="skill-title">工程设计</h3>
+                        <div class="skill-list">
+                            <span class="skill-item">SolidWorks</span>
+                            <span class="skill-item">CAD</span>
+                            <span class="skill-item">工业机器人</span>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <h3 class="skill-title">音视频 & 设计</h3>
+                        <div class="skill-list">
+                            <span class="skill-item">Adobe PR</span>
+                            <span class="skill-item">Adobe AI</span>
+                            <span class="skill-item">剪映</span>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <h3 class="skill-title">软技能</h3>
+                        <div class="skill-list">
+                            <span class="skill-item">项目统筹</span>
+                            <span class="skill-item">跨团队协调</span>
+                            <span class="skill-item">活动策划</span>
+                            <span class="skill-item">品牌运营</span>
+                            <span class="skill-item">PRINCE2</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="section">
+                <h2 class="section-title">自我评价</h2>
+                <div class="timeline-desc" style="font-size: 1.05rem; line-height: 1.9;">
+                    <p>本人熟练运用SolidWorks、AutoCAD等工程绘图工具，熟练掌握AI、PR设计工具，具备较强的组织管理能力，擅长统筹协调、资源调配与流程把控，能够高效推进团队任务落地；在会务组织管理方面经验丰富，可独立完成会议策划、流程设计、现场执行等全流程工作，确保会议规范有序、高效开展。具备良好的公文写作能力，熟悉各类通知、报告总结等公务文书的撰写规范，行文严谨、逻辑清晰，支撑工作决策与沟通协作。</p>
+                    <br>
+                    <p>擅长乒乓球、羽毛球，具备良好的体能与抗压能力。性格平和开朗、待人热忱，拥有团队协作意识与责任感，动手实践能力突出，沟通协调高效，适应力与学习能力强。面对工作中困难与挑战，能够主动思考解决方案，积极承担任务，欲在科技创新、产品研发、技术落地等领域持续学习与突破，追求将专业技能转化为实际创新成果。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const navIndicator = document.querySelector('.nav-indicator');
+        const navItems = document.querySelectorAll('.nav-list li');
+
+        // 初始化指示器位置
+        function updateIndicator(index) {
+            const activeLink = navLinks[index];
+            if (activeLink) {
+                const linkTop = activeLink.offsetTop;
+                navIndicator.style.top = linkTop + 'px';
+            }
+        }
+
+        // 初始位置
+        updateIndicator(0);
+
+        let isClickScrolling = false;
+        let clickLockTimeout = null;
+
+        const observer = new IntersectionObserver((entries) => {
+            // 点击滚动期间，observer 不更新高亮（强制锁定）
+            if (isClickScrolling) return;
+
+            // 找到当前最应该高亮的 section（最靠近视口顶部的可见 section）
+            let bestEntry = null;
+            let bestTop = Infinity;
+
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const rect = entry.target.getBoundingClientRect();
+                    if (rect.top < bestTop) {
+                        bestTop = rect.top;
+                        bestEntry = entry;
+                    }
+                }
+            });
+
+            if (!bestEntry) return;
+
+            const detectedIndex = Array.from(navLinks).findIndex(
+                link => link.getAttribute('href') === '#' + bestEntry.target.id
+            );
+
+            // 更新高亮
+            navLinks.forEach(l => l.classList.remove('active'));
+            navLinks[detectedIndex].classList.add('active');
+            updateIndicator(detectedIndex);
+        }, { threshold: 0.3, rootMargin: '-15% 0px -45% 0px' });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        navLinks.forEach((link, index) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                // 清除之前的锁定超时
+                if (clickLockTimeout) clearTimeout(clickLockTimeout);
+
+                // 标记正在点击滚动（锁定模式）
+                isClickScrolling = true;
+
+                // 立即更新导航激活状态和指示器
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                updateIndicator(index);
+
+                // 移除动画类，重置状态
+                targetSection.style.animation = 'none';
+                targetSection.style.opacity = '0';
+                void targetSection.offsetWidth;
+                targetSection.style.animation = 'fadeIn 0.8s ease forwards';
+
+                // 滚动到目标位置
+                const offset = 80;
+                window.scrollTo({
+                    top: targetSection.offsetTop - offset,
+                    behavior: 'smooth'
+                });
+
+                // 滚动动画完成后解除锁定，恢复 observer 自动检测
+                clickLockTimeout = setTimeout(() => {
+                    isClickScrolling = false;
+                }, 1200);
+            });
+        });
+    </script>
+</body>
+</html>
